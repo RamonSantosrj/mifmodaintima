@@ -2,6 +2,7 @@ package com.mifmodaintima.security;
 
 
 
+import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class TokenAuthenticationService {
@@ -33,8 +36,13 @@ public class TokenAuthenticationService {
 					.setIssuer(application) //nome da aplicação
 					.setSubject(email) //email do usuario
 					.setExpiration(exp)
-					.signWith(SignatureAlgorithm.HS256, secret)
+					.signWith(getSignKey(), SignatureAlgorithm.HS256)
 					.compact();
+	}
+	
+	private Key getSignKey() {
+		byte[] keybytes = Decoders.BASE64.decode(secret);
+		return Keys.hmacShaKeyFor(keybytes);
 	}
 }
 

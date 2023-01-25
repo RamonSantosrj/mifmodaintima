@@ -4,9 +4,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mifmodaintima.application.dtos.ClientePutRequest;
+import com.mifmodaintima.application.dtos.EmailMessageDTO;
 import com.mifmodaintima.domain.entity.Cliente;
 import com.mifmodaintima.domain.intefaces.IClienteDomainService;
 import com.mifmodaintima.helpers.MD5Helper;
@@ -28,7 +31,9 @@ public class ClienteDomainService implements IClienteDomainService {
 			throw new IllegalArgumentException("Telefone ja cadastrado");
 
 		cliente.setSenha(MD5Helper.getHashMd5(cliente.getSenha()));
-
+		
+		
+		cliente.setAtivo(true);
 		cliente.setCadastradoEm(new Date());
 		cliente.setAtualizadoEm(new Date());
 		clienteRepository.save(cliente);
@@ -53,13 +58,17 @@ public class ClienteDomainService implements IClienteDomainService {
 	}
 
 	@Override
-	public Cliente update(Cliente cliente) {
+	public Cliente update(ClientePutRequest dto) {
 
-		Optional<Cliente> optional = clienteRepository.findById(cliente.get_id());
-		
-		if(optional.isEmpty())
+		Optional<Cliente> optional = clienteRepository.findById(dto.get_id());
+
+		if (optional.isEmpty())
 			throw new IllegalArgumentException("Usuario nao encontrado");
-		
+
+		Cliente cliente = optional.get();
+
+		cliente.setNome(dto.getNome());
+		cliente.setTelefone(dto.getTelefone());
 		cliente.setSenha(MD5Helper.getHashMd5(cliente.getSenha()));
 		cliente.setAtualizadoEm(new Date());
 		clienteRepository.save(cliente);
@@ -70,15 +79,38 @@ public class ClienteDomainService implements IClienteDomainService {
 
 	@Override
 	public Cliente Auth(String email, String senha) {
-		
+
 		Optional<Cliente> optional = clienteRepository.findByEmailAndSenha(email, MD5Helper.getHashMd5(senha));
-		
-		if(optional.isEmpty())
+
+		if (optional.isEmpty())
 			throw new IllegalArgumentException("Email ou senha errado");
-		
+
 		Cliente cliente = optional.get();
-		
-		
+
 		return cliente;
 	}
+
+	@Override
+	public EmailMessageDTO emailMessage(Cliente cliente) {
+		
+		EmailMessageDTO emailMessageDTO = new EmailMessageDTO();
+		emailMessageDTO.setTo(cliente.getEmail());
+		emailMessageDTO.setSubject("Parabens cliente cadastrado com sucesso!");
+		emailMessageDTO.setBody("Ola, " + cliente.getNome()
+		+ "\n\nSua conta de cliuente foi cadastrada com sucesso no ecommerce Mifmodaintima."
+		+ "\nSeus dados sao:"
+		+ "\nNome: " + cliente.getNome() 
+		+ "\nEmail: " + cliente.getEmail()
+		+ "\nTelefone: " + cliente.getTelefone()
+		+"\nData de nascimento: " + cliente.getDataDeNascimento()
+		+ "\n\nAtt"
+		
+		
+				
+				
+				);
+		
+		return emailMessageDTO;
+	}
+
 }

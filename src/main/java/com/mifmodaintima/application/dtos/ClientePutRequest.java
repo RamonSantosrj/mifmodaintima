@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ClientePutRequest {
 
-	private String id;
+	private String _id;
 	@NotBlank (message = "Nome do cliente obrigatorio")
 	@Size ( min = 4, max = 25, message = "Nome do Cliente deve conter de 4 a 25 caracteres")
 	private String nome;

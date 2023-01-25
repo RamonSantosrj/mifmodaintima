@@ -42,6 +42,6 @@ HttpStatus status;
 		authPostResponse.setMensagem(e.getMessage());
 		
 	}
-	return ResponseEntity.status(HttpStatus.OK).body(authPostResponse);
+	return ResponseEntity.status(status).body(authPostResponse);
 }
 }

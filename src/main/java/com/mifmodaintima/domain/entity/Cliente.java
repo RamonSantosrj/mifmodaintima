@@ -1,6 +1,6 @@
 package com.mifmodaintima.domain.entity;
 
-import java.time.Instant;
+
 import java.util.Date;
 
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -33,4 +33,8 @@ public class Cliente {
 	@JsonIgnore
 	private String senha;
 
+	private boolean ativo;
+	
+	private String permissao;
+	
 }

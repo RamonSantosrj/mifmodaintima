@@ -15,6 +15,7 @@ import com.mifmodaintima.security.TokenAuthenticationFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
+	@SuppressWarnings("deprecation")
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -22,6 +23,7 @@ public class SecurityConfig {
 				.authorizeRequests()
 				.requestMatchers(HttpMethod.POST, "/v1/auth").permitAll()
 				.requestMatchers(HttpMethod.POST, "/v1/cliente").permitAll()
+				.requestMatchers(HttpMethod.PUT, "/v1/cliente").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.anyRequest()
 				.authenticated();
